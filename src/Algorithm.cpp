@@ -129,8 +129,8 @@ namespace hero_chassis_controller {
     void Algorithm::ComOdom()
     {
         dt = (now - last_time_).toSec();
-        dx = (Now_Vx * cos(Wa) - Now_Vy * sin(Now_Wa)) * dt;
-        dy = (Now_Vx * sin(Wa) + Now_Vy * cos(Now_Wa)) * dt;
+        dx = (Now_Vx * cos(Now_Wa) - Now_Vy * sin(Now_Wa)) * dt;
+        dy = (Now_Vx * sin(Now_Wa) + Now_Vy * cos(Now_Wa)) * dt;
         dth = Now_Wa * dt;
 
         x += dx;
