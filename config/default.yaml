@@ -1,1 +1,14 @@
-subscriber_topic: /temperature
+controller:
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  hero_chassis_controller:
+    type: hero_chassis_controller/Algorithm
+    pid1: { p: 1.0, i: 0.1, d: 0.0 }
+    pid2: { p: 1.0, i: 0.1, d: 0.0 }
+    pid3: { p: 1.0, i: 0.1, d: 0.0 }
+    pid4: { p: 1.0, i: 0.1, d: 0.0 }
+    wheel_track: 0.4
+    wheel_base: 0.4
+

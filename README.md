@@ -1,28 +1,22 @@
-# Package Name
+# hero_chassis_controller
 
 ## Overview
 
-This is a template: replace, remove, and add where required. Describe here what this package does and what it's meant
-for in a few sentences.
+PID is used to control the speed of wheels, inverse kinematics is used to calculate the expected speed of each wheel, 
+forward kinematics is used to realize the odometer, and keyboard is used to control the chassis.
 
-**Keywords:** example, package, template
+**Keywords:** PID, inverse kinematics, odometer, keyboard
 
-Or, add some keywords to the Bitbucket or GitHub repository.
 
 ### License
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
-**Author: Péter Fankhauser<br />
-Affiliation: [ANYbotics](https://www.anybotics.com/)<br />
-Maintainer: Péter Fankhauser, pfankhauser@anybotics.com**
+**Author: Blanchard Lj<br />**
 
-The PACKAGE NAME package has been tested under [ROS] Indigo, Melodic and Noetic on respectively Ubuntu 14.04, 18.04 and
+The hero_chassis_controller package has been tested under [ROS] Indigo, Melodic and Noetic on respectively Ubuntu 14.04, 18.04 and
 20.04. This is research code, expect that it changes often and any fitness for a particular purpose is disclaimed.
 
-[![Build Status](http://rsl-ci.ethz.ch/buildStatus/icon?job=ros_best_practices)](http://rsl-ci.ethz.ch/job/ros_best_practices/)
-
-![Example image](doc/example.jpg)
 
 [comment]: <> (### Publications)
 
@@ -63,8 +57,18 @@ Or better, use `rosdep`:
 #### Dependencies
 
 - [Robot Operating System (ROS)](http://wiki.ros.org) (middleware for robotics),
-- [Eigen] (linear algebra library)
-
+- [rm_description](https://github.com/gdut-dynamic-x/rm_description)
+- controller_interface
+- hardware_interface
+- forward_command_controller
+- pluginlib
+- control_toolbox
+- geometry_msgs
+- control_msgs
+- realtime_tools
+- tf
+- nav_msgs
+#### Install dependencies:
   sudo rosdep install --from-paths src
 
 #### Building
@@ -73,7 +77,7 @@ To build from source, clone the latest version from this repository into your ca
 using
 
 	cd catkin_workspace/src
-	git clone https://github.com/ethz-asl/ros_best_practices.git
+	git clone https://github.com/BlanchardLj/hero_chassis_controller.git
 	cd ../
 	rosdep install --from-paths . --ignore-src
 	catkin_make
@@ -94,24 +98,12 @@ Now, create a catkin workspace, clone the package, build it, done!
 
 	apt-get update && apt-get install -y git
 	mkdir -p /ws/src && cd /ws/src
-	git clone https://github.com/leggedrobotics/ros_best_practices.git
+	git clone https://github.com/BlanchardLj/hero_chassis_controller.git
 	cd ..
 	rosdep install --from-path src
 	catkin_make
 	source devel/setup.bash
-	roslaunch ros_package_template ros_package_template.launch
-
-### Unit Tests
-
-Run the unit tests with
-
-	catkin_make run_tests_ros_package_template
-
-### Static code analysis
-
-Run the static code analysis with
-
-	catkin_make roslint_ros_package_template
+	roslaunch hero_chasssis_controller hero_chassis_controller.launch
 
 ## Usage
 
@@ -119,73 +111,63 @@ Describe the quickest way to run this software, for example:
 
 Run the main node with
 
-	roslaunch ros_package_template ros_package_template.launch
+	roslaunch hero_chasssis_controller hero_chassis_controller.launch
 
 ## Config files
 
-Config file folder/set 1
 
-* **config_file_1.yaml** Shortly explain the content of this config file
+* **default.yaml** Params of joint_state_controller , four PID controllers, 
+wheelbase and track width of chassis.
 
-Config file folder/set 2
-
-* **...**
 
 ## Launch files
 
-* **launch_file_1.launch:** shortly explain what is launched (e.g standard simulation, simulation with gdb,...)
-
-  Argument set 1
-
-    - **`argument_1`** Short description (e.g. as commented in launch file). Default: `default_value`.
-
-  Argument set 2
-
-    - **`...`**
-
-* **...**
+* **hero_chassis_controller.launch:** standard simulation of hero chassis
 
 ## Nodes
 
-### ros_package_template
+### hero_chassis_controller
 
-Reads temperature measurements and computed the average.
+Read the speed and calculate and control the chassis movement.
 
 #### Subscribed Topics
 
-* **`/temperature`** ([sensor_msgs/Temperature])
+* **`/cmd_vel`** ([geometry_msgs/Twist])
 
-  The temperature measurements from which the average is computed.
+  Speed command issued to chassis.
 
 #### Published Topics
 
-...
+* **`/controller/hero_chassis_controller/state
+  `** ([control_msgs/JointControllerState])
 
-#### Services
+  Publish the state of the joint controller.
 
-* **`get_average`** ([std_srvs/Trigger])
+* **`/controller/hero_chassis_controller/odom`** ([nav_msgs/Odometry])
 
-  Returns information about the current average. For example, you can trigger the computation from the console with
+  Calculate the speed of the chassis according to the actual speed of the wheels, and realize the odometer by superposition.
 
-  	rosservice call /ros_package_template/get_average
+
+
 
 #### Parameters
 
-* **`subscriber_topic`** (string, default: "/temperature")
+* **`wheel_R`** (double, default: 0.0675)
 
-  The name of the input topic.
+  Radius of wheels.
 
-* **`cache_size`** (int, default: 200, min: 0, max: 1000)
+* **`wheel_track`** (double, default: 0.4)
 
-  The size of the cache.
+  Track width of chassis.
 
-### NODE_B_NAME
+* **`wheel_base`** (double, default: 0.4)
 
-...
+  Wheelbase of chassis.
+
 
 ## Bugs & Feature Requests
 
-Please report bugs and request features using the [Issue Tracker](https://github.com/gdut-dynamic-x/rm_template/issues)
+Please report bugs and request features using the [Issue Tracker](https://github.com/BlanchardLj/hero_chassis_controller/issues)
 .
 
 
@@ -193,8 +175,10 @@ Please report bugs and request features using the [Issue Tracker](https://github
 
 [rviz]: http://wiki.ros.org/rviz
 
-[Eigen]: http://eigen.tuxfamily.org
-
 [std_srvs/Trigger]: http://docs.ros.org/api/std_srvs/html/srv/Trigger.html
 
-[sensor_msgs/Temperature]: http://docs.ros.org/api/sensor_msgs/html/msg/Temperature.html
+[geometry_msgs/Twist]: http://docs.ros.org/en/jade/api/geometry_msgs/html/msg/Twist.html
+
+[nav_msgs/Odometry]: http://docs.ros.org/en/noetic/api/nav_msgs/html/msg/Odometry.html
+
+[control_msgs/JointControllerState]: http://docs.ros.org/en/api/control_msgs/html/msg/JointControllerState.html
