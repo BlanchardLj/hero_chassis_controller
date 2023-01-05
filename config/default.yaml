@@ -5,10 +5,10 @@ controller:
 
   hero_chassis_controller:
     type: hero_chassis_controller/Algorithm
-    pid1: { p: 1.0, i: 0.1, d: 0.0 }
-    pid2: { p: 1.0, i: 0.1, d: 0.0 }
-    pid3: { p: 1.0, i: 0.1, d: 0.0 }
-    pid4: { p: 1.0, i: 0.1, d: 0.0 }
+    pid1: { p: 8.0, i: 0.1, d: 0.001 }
+    pid2: { p: 8.0, i: 0.1, d: 0.001 }
+    pid3: { p: 8.0, i: 0.1, d: 0.001 }
+    pid4: { p: 8.0, i: 0.1, d: 0.001 }
     wheel_track: 0.4
     wheel_base: 0.4
 
